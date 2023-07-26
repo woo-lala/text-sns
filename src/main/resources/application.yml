@@ -22,6 +22,13 @@ spring:
         format_sql: true
     database-platform: org.hibernate.dialect.H2Dialect
 
-  logging:
-    level:
-      org.hibernate.SQL: debug
+
+jwt:
+  secret-key: "study.text-sns-application-2023.secret_key"
+  #30 days
+  token.expired-time-ms: 2592000000
+
+#  logging:
+#    level:
+#      org.hibernate.SQL: debug
+

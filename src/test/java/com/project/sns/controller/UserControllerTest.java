@@ -42,7 +42,7 @@ public class UserControllerTest {
         // TODO : mocking
         when(userService.join(userName, password)).thenReturn(mock(User.class));
 
-        mockMvc.perform(post("/api/v1/uysers/join")
+        mockMvc.perform(post("/api/v1/users/join")
                 .contentType(MediaType.APPLICATION_JSON)
                 // TODO : add request body
                 .content(objectMapper.writeValueAsBytes(new UserJoinRequest(userName,password)))
@@ -58,7 +58,7 @@ public class UserControllerTest {
         // TODO : mocking
         when(userService.join(userName, password)).thenThrow(new SnsApplicationException(ErrorCode.DUPLICATED_USER_NAME,""));
 
-        mockMvc.perform(post("/api/v1/uysers/join")
+        mockMvc.perform(post("/api/v1/users/join")
                         .contentType(MediaType.APPLICATION_JSON)
                         // TODO : add request body
                         .content(objectMapper.writeValueAsBytes(new UserJoinRequest(userName,password)))
@@ -73,7 +73,7 @@ public class UserControllerTest {
 
         // TODO : mocking
         when(userService.login(userName, password)).thenReturn("test_token");
-        mockMvc.perform(post("/api/v1/uysers/login")
+        mockMvc.perform(post("/api/v1/users/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         // TODO : add request body
                         .content(objectMapper.writeValueAsBytes(new UserLoginRequest(userName,password)))
@@ -87,8 +87,8 @@ public class UserControllerTest {
         String password = "password";
 
         // TODO : mocking
-        when(userService.login(userName, password)).thenThrow(new SnsApplicationException(ErrorCode.DUPLICATED_USER_NAME, ""));
-        mockMvc.perform(post("/api/v1/uysers/login")
+        when(userService.login(userName, password)).thenThrow(new SnsApplicationException(ErrorCode.USER_NOT_FOUND));
+        mockMvc.perform(post("/api/v1/users/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         // TODO : add request body
                         .content(objectMapper.writeValueAsBytes(new UserLoginRequest(userName,password)))
@@ -102,8 +102,8 @@ public class UserControllerTest {
         String password = "password";
 
         // TODO : mocking
-        when(userService.login(userName, password)).thenThrow(new SnsApplicationException(ErrorCode.DUPLICATED_USER_NAME, ""));
-        mockMvc.perform(post("/api/v1/uysers/login")
+        when(userService.login(userName, password)).thenThrow(new SnsApplicationException(ErrorCode.INVALID_PASSWORD));
+        mockMvc.perform(post("/api/v1/users/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         // TODO : add request body
                         .content(objectMapper.writeValueAsBytes(new UserLoginRequest(userName,password)))

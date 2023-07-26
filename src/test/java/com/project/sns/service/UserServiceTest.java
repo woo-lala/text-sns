@@ -1,5 +1,6 @@
 package com.project.sns.service;
 
+import com.project.sns.exception.ErrorCode;
 import com.project.sns.exception.SnsApplicationException;
 import com.project.sns.fixture.UserEntityFixture;
 import com.project.sns.model.entity.UserEntity;
@@ -10,6 +11,7 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 
@@ -26,6 +28,9 @@ public class UserServiceTest {
     @MockBean
     private UserEntityRepository userEntityRepository;
 
+    @MockBean
+    private BCryptPasswordEncoder encoder;
+
 
     @Test
     void 회원가입이_정상적으로_동작하는_경우() {
@@ -35,7 +40,8 @@ public class UserServiceTest {
 
         //mocking
         when(userEntityRepository.findByUserName(userName)).thenReturn(Optional.empty());
-        when(userEntityRepository.save(any())).thenReturn(Optional.of(mock(UserEntity.class)));
+        when(encoder.encode(password)).thenReturn("encrypt_password");
+        when(userEntityRepository.save(any())).thenReturn(UserEntityFixture.get(userName, password));
 
 
         Assertions.assertDoesNotThrow(() -> userService.join(userName, password)); //join을 했을 때 assertions 던지지 않아야 함!
@@ -53,8 +59,8 @@ public class UserServiceTest {
         when(userEntityRepository.findByUserName(userName)).thenReturn(Optional.of(fixture));
         when(userEntityRepository.save(any())).thenReturn(Optional.of(fixture));
 
-
-        Assertions.assertThrows(SnsApplicationException.class, () -> userService.join(userName, password)); //join을 했을 때 assertions 던지지 않아야 함!
+        SnsApplicationException e = Assertions.assertThrows(SnsApplicationException.class, () -> userService.join(userName, password));//join을 했을 때 assertions 던지지 않아야 함!
+        Assertions.assertEquals(ErrorCode.DUPLICATED_USER_NAME, e.getErrorCode());
     }
 
     @Test
@@ -67,10 +73,9 @@ public class UserServiceTest {
 
         //mocking
         when(userEntityRepository.findByUserName(userName)).thenReturn(Optional.of(fixture));
-        when(userEntityRepository.save(any())).thenReturn(Optional.of(mock(UserEntity.class)));
+        when(encoder.matches(password, fixture.getPassword())).thenReturn(true);
 
-
-        Assertions.assertDoesNotThrow(() -> userService.join(userName, password)); //join을 했을 때 assertions 던지지 않아야 함!
+        Assertions.assertDoesNotThrow(() -> userService.login(userName, password));
     }
 
 
@@ -83,7 +88,8 @@ public class UserServiceTest {
         //mocking
         when(userEntityRepository.findByUserName(userName)).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(SnsApplicationException.class, () -> userService.login(userName, password));
+        SnsApplicationException e = Assertions.assertThrows(SnsApplicationException.class, () -> userService.login(userName, password));
+        Assertions.assertEquals(ErrorCode.USER_NOT_FOUND, e.getErrorCode());
     }
 
 
@@ -100,7 +106,8 @@ public class UserServiceTest {
         //mocking
         when(userEntityRepository.findByUserName(userName)).thenReturn(Optional.of(fixture));
 
-        Assertions.assertThrows(SnsApplicationException.class, () -> userService.login(userName, wrongPassword));
+        SnsApplicationException e = Assertions.assertThrows(SnsApplicationException.class, () -> userService.login(userName, wrongPassword));
+        Assertions.assertEquals(ErrorCode.INVALID_PASSWORD, e.getErrorCode());
     }
 
 }
