@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 
 @Slf4j
-@RestControllerAdvice
+@RestControllerAdvice //bean 등 -> 전역적으로 에러를 핸들링하는 클래스 만들 수 있다
 public class GlobalControllerAdvice {
 
     @ExceptionHandler(SnsApplicationException.class)

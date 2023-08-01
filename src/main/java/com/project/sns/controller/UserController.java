@@ -20,7 +20,6 @@ public class UserController {
 
     private final UserService userService;
 
-    // TODO : implement
     @PostMapping("/join")
     public Response<UserJoinResponse> join(@RequestBody UserJoinRequest request) {
         //  실제로 join하게 된다
