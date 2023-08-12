@@ -2,22 +2,27 @@ package com.project.sns.service;
 
 import com.project.sns.exception.ErrorCode;
 import com.project.sns.exception.SnsApplicationException;
+import com.project.sns.model.Alarm;
 import com.project.sns.model.User;
 import com.project.sns.model.entity.UserEntity;
+import com.project.sns.repository.AlarmEntityRepository;
 import com.project.sns.repository.UserEntityRepository;
 import com.project.sns.util.JwtTokenUtils;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserEntityRepository userEntityRepository;
+    private final AlarmEntityRepository alarmEntityRepository;
     private final BCryptPasswordEncoder encoder;
 
     //config에서 리소스로 등록해서 사용하는  -> application.yml 에서 등록해줘야 한다
@@ -59,6 +64,14 @@ public class UserService {
         //토큰 생성
         String token = JwtTokenUtils.generateToken(userName, secretKey, expiredTimeMs);
         return token;
+    }
+
+    // TODO: alarm return
+    public Page<Alarm> alarmList(String userName, Pageable pageable) {
+
+        UserEntity userEntity = userEntityRepository.findByUserName(userName).orElseThrow(() -> new SnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("%s not found", userName)));
+        return alarmEntityRepository.findAllByUser(userEntity, pageable).map(Alarm::fromEntity);
+
     }
 
 }
