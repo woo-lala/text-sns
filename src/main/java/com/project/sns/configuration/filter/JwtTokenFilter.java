@@ -52,7 +52,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             // TODO : get username from token
             String userName = JwtTokenUtils.getUsername(token, key);
             // TODO : check the username is valid
-            User user = userService.loadUserByUsername(userName);
+            User user = userService.loadUserByUsername(userName); //DB에서 user 조회
 
             // context에 넣어서 컨테이너로 보내줘야 한다
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
@@ -61,7 +61,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
             //check
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            SecurityContextHolder.getContext().setAuthentication(authentication); //context에 넣어서 api 에서 authentication 받아서 사용 가능
         } catch (RuntimeException e) {
             log.error("Error occurs while validating, {}", e.toString());
             filterChain.doFilter(request, response);
