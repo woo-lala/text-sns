@@ -3,6 +3,7 @@ package com.project.sns.repository;
 import com.project.sns.model.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.redis.core.RedisHash;
 
 import java.util.Optional;
 

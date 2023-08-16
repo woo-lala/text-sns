@@ -2,6 +2,7 @@ package com.project.sns.repository;
 
 import com.project.sns.model.entity.AlarmEntity;
 import com.project.sns.model.entity.LikeEntity;
+import org.springframework.data.redis.core.RedisHash;
 import com.project.sns.model.entity.PostEntity;
 import com.project.sns.model.entity.UserEntity;
 import org.springframework.data.domain.Page;

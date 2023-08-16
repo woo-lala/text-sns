@@ -1,6 +1,7 @@
 package com.project.sns.repository;
 
 import com.project.sns.model.entity.CommentEntity;
+import org.springframework.data.redis.core.RedisHash;
 import com.project.sns.model.entity.LikeEntity;
 import com.project.sns.model.entity.PostEntity;
 import com.project.sns.model.entity.UserEntity;

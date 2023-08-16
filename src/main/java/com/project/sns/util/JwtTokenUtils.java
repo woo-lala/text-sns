@@ -11,8 +11,6 @@ import java.util.Date;
 
 public class JwtTokenUtils { //로그인할 때 토큰 생성하는 부분!!!
 
-
-
     public static String getUsername(String token, String key) {
         return extractClaims(token, key).get("userName", String.class);
     }
