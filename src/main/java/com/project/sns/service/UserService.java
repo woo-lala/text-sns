@@ -60,15 +60,13 @@ public class UserService {
         User user = loadUserByUsername(userName);
         userCacheRepository.setUser(user);
 
-
         //비밀번호 체크 (암호화 되어 있으므로)
         if(!encoder.matches(password, user.getPassword())) {
             throw new SnsApplicationException(ErrorCode.INVALID_PASSWORD);
         }
 
         //토큰 생성
-        String token = JwtTokenUtils.generateToken(userName, secretKey, expiredTimeMs);
-        return token;
+        return JwtTokenUtils.generateToken(userName, secretKey, expiredTimeMs);
     }
 
     // TODO: alarm return

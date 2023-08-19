@@ -1,9 +1,12 @@
 package com.project.sns.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.project.sns.model.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +17,8 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User implements UserDetails {
 
     private Integer id;
@@ -38,27 +43,36 @@ public class User implements UserDetails {
     }
 
 
+    /**
+     * 아래 메소드 들이 다 캐싱 되는데 -> 이 정보들은 캐싱할 필요가 없다
+     * @return
+     */
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(this.getUserRole().toString()));
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonExpired() {
         return this.deletedAt == null;
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonLocked() {
         return this.deletedAt == null;
     }
 
     @Override
+    @JsonIgnore
     public boolean isCredentialsNonExpired() {
         return this.deletedAt == null;
     }
 
     @Override
+    @JsonIgnore
     public boolean isEnabled() {
         return this.deletedAt == null;
     }
